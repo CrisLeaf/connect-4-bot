@@ -76,9 +76,9 @@ def draw_board(board):
 					screen, RED, (int(c*SQUARE_SIZE + SQUARE_SIZE/2),
 								  height - int(r*SQUARE_SIZE + SQUARE_SIZE/2)), RADIUS
 				)
-			elif board[r][c] ==2:
+			elif board[r][c] == -1:
 				pygame.draw.circle(
-					screen, YELLOW, (int(c * SQUARE_SIZE + SQUARE_SIZE / 2),
+					screen, YELLOW, (int(c * SQUARE_SIZE + SQUARE_SIZE/2),
 									height - int(r*SQUARE_SIZE + SQUARE_SIZE/2)), RADIUS
 				)
 				
@@ -93,7 +93,7 @@ pygame.init()
 SQUARE_SIZE = 100
 
 width = COLUMN_COUNT * SQUARE_SIZE
-height = (ROW_COUNT + 1) * SQUARE_SIZE
+height = (ROW_COUNT+1) * SQUARE_SIZE
 
 size = (width, height)
 
@@ -142,14 +142,14 @@ while not game_over:
 
 				if is_valid_location(board, col):
 					row = get_next_open_row(board, col)
-					drop_piece(board, row, col, 2)
+					drop_piece(board, row, col, -1)
 
-					if winning_move(board, 2):
+					if winning_move(board, -1):
 						label = myfont.render("Player 2 Wins!!", 1, RED)
 						screen.blit(label, (40, 10))
 						game_over = True
 
-			# print_board(board)
+			print_board(board)
 			draw_board(board)
 
 			turn += 1
