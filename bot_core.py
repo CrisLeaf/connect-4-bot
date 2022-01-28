@@ -39,7 +39,7 @@ class GameBot():
 				available_position = np.where(played_mat[:, j] != 0)[0][0] - 1
 			except:
 				available_position = self.rows_count - 1
-			
+				
 			if available_position >= 0:
 				played_mat_copy[available_position, j] = -1
 			else:
@@ -49,7 +49,9 @@ class GameBot():
 			pred_proba = self.classifier.predict_proba(played_mat_copy.reshape(1, -1))
 			pred_probas.append(pred_proba[0][0])
 			
+		print(j)
 		next_move = pred_probas.index(max(pred_probas))
+		print(pred_probas)
 		
 		return next_move
 

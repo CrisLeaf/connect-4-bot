@@ -1,3 +1,4 @@
+import numpy as np
 import pygame
 import sys
 import math
@@ -56,28 +57,26 @@ while not game_over:
 					label = my_font.render("Player 1 Wins!!", 1, RED)
 					screen.blit(label, (40, 10))
 					game_over = True
-					print_board(board)
+					# print_board(board)
 					draw_board(screen, board)
 					break
 					
-						
-			
-			bot_move = bot.get_next_move(board)
-			print(bot_move)
+					
+			bot_move = bot.get_next_move(np.flip(board, 0))
 			
 			if is_valid_location(board, bot_move):
 				row = get_next_open_row(board, bot_move)
 				drop_piece(board, row, bot_move, -1)
 				
 				if winning_move(board, -1):
-					label = my_font.render("Bot Wins!!", 1, RED)
+					label = my_font.render("Bot Wins!!", 1, YELLOW)
 					screen.blit(label, (40, 10))
 					game_over = True
-					print_board(board)
+					# print_board(board)
 					draw_board(screen, board)
 					break
 			
-			print_board(board)
+			# print_board(board)
 			draw_board(screen, board)
 			
 			turn += 1
