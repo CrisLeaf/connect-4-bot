@@ -1,6 +1,6 @@
 import numpy as np
 import pickle
-from game_core import ROWS_COUNT, COLUMNS_COUNT
+from game_core import ROWS_COUNT, COLUMNS_COUNT, winning_move
 
 
 class GameBot():
@@ -36,37 +36,67 @@ class GameBot():
 			
 			# Fill a piece on the available position in column j, if not continue with the loop
 			try:
-				available_position = np.where(played_mat[:, j] != 0)[0][0] - 1
+				available_position = np.where(played_mat_copy[:, j] != 0)[0][0] - 1
 			except:
 				available_position = self.rows_count - 1
-				
+			
 			if available_position >= 0:
 				played_mat_copy[available_position, j] = -1
+			##################################################################
+				
+				pred_probas_ = []
+
+				for jj in range(self.columns_count):
+					played_mat_copy_ = played_mat_copy.copy()
+
+					try:
+						available_position = np.where(played_mat_copy_[:, jj] != 0)[0][0] - 1
+					except:
+						available_position = self.rows_count - 1
+
+					if available_position >= 0:
+						played_mat_copy_[available_position, jj] = 1
+					###########################################################################
+
+						pred_probas__ = []
+
+						for jjj in range(self.columns_count):
+							played_mat_copy__ = played_mat_copy_.copy()
+
+							try:
+								available_position = np.where(played_mat_copy__[:, jjj] != 0)[0][0] - 1
+							except:
+								available_position = self.rows_count - 1
+
+							if available_position >= 0:
+								played_mat_copy__[available_position, jjj] = -1
+							else:
+								continue
+
+							if winning_move(played_mat_copy__, 1):
+								pred_proba = [[-10]]
+
+							else:
+								pred_proba = self.classifier.predict_proba(played_mat_copy__.reshape(1, -1))
+
+							pred_proba += np.random.uniform(-0.3, 0.3, 1)
+
+							pred_probas__.append(pred_proba[0][0])
+
+					###########################################################################
+					else:
+						continue
+
+					# pred_proba = self.classifier.predict_proba(played_mat_copy_.reshape(1, -1))
+					pred_probas_.append(np.mean(pred_probas__))
+			
+			###################################################################
 			else:
+				pred_probas.append(-100)
 				continue
+				
+			pred_probas.append(np.mean(pred_probas_))
 			
-			# Predict the win probability
-			pred_proba = self.classifier.predict_proba(played_mat_copy.reshape(1, -1))
-			pred_probas.append(pred_proba[0][0])
-			
-		print(j)
 		next_move = pred_probas.index(max(pred_probas))
-		print(pred_probas)
 		
 		return next_move
-
-
-# played_mat = np.zeros((ROWS_COUNT, COLUMNS_COUNT))
-#
-# for j in [1, 3, 4, 5, 6]:
-# 	played_mat[5, j] = 1
-# 	played_mat[4, j] = 1
-# 	played_mat[3, j] = 1
-#
-#
-# print(played_mat)
-#
-# bot = GameBot()
-# bot.load_next_moves_classifier()
-# next_move = bot.get_next_move(played_mat)
-# print(next_move)
