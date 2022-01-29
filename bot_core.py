@@ -129,6 +129,7 @@ class GameBot():
 			
 			for move in moves_list:
 				pred_proba = self.get_win_probability_prediction(move)
+				pred_proba += np.random.uniform(-0.3, 0.3, 1)[0]
 				sub_probas.append(pred_proba)
 			
 			probabilities.append(np.mean(sub_probas))
