@@ -62,7 +62,7 @@ while not game_over:
 					break
 					
 					
-			bot_move = bot.get_next_move(np.flip(board, 0))
+			bot_move = bot.get_next_move_suggested(np.flip(board, 0))
 			
 			if is_valid_location(board, bot_move):
 				row = get_next_open_row(board, bot_move)

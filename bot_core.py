@@ -25,7 +25,7 @@ class GameBot():
 		else:
 			prediction = self.classifier.predict_proba(played_mat.reshape(1, -1))
 		
-		return prediction
+		return prediction[0][0]
 	
 	def get_column_available_position(self, played_mat, column):
 		"""
@@ -69,7 +69,7 @@ class GameBot():
 				
 		return possible_plays_list
 	
-	def get_next_move(self, played_mat):
+	def get_next_move_suggested(self, played_mat):
 		"""
 		Get the move to play, based on win probabilities of each possible next move.
 
@@ -128,7 +128,7 @@ class GameBot():
 			sub_probas = []
 			
 			for move in moves_list:
-				pred_proba = self.classifier.predict_proba(move.reshape(1, -1))[0][0]
+				pred_proba = self.get_win_probability_prediction(move)
 				sub_probas.append(pred_proba)
 			
 			probabilities.append(np.mean(sub_probas))
