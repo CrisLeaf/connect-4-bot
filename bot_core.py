@@ -45,10 +45,10 @@ class GameBot():
 		
 		Params
 		------
-		- played_mat, numpy array : the actual game state
-		- piece, {-1, 1} : the player's turn
+		- played_mat, numpy array : the actual game state,
+		- piece, {-1, 1} : the player's turn,
 		- first_iteration, bool : used to check move availability. If not, the function will return
-								  an 'Invalid Move' element inside the list
+								  an 'Invalid Move' element inside the list.
 		
 		Returns
 		-------
@@ -71,6 +71,17 @@ class GameBot():
 		return possible_plays_list
 	
 	def get_available_columns(self, played_mat):
+		"""
+		Get the available columns of the current game state.
+		
+		Params
+		------
+		- played_mat, numpy array : the actual game state.
+		
+		Returns
+		-------
+		- available_columns, list : list of available column indexes.
+		"""
 		available_columns = []
 		
 		for col in range(self.columns_count):
@@ -81,23 +92,37 @@ class GameBot():
 			
 		return available_columns
 	
-	def get_simulated_game(self, played_mat, next_turn, future_steps=10):
+	def get_simulated_game(self, played_mat, next_turn, future_steps=30):
+		"""
+		Randomly simulate a game of an specific number of plays.
+		
+		Params
+		------
+		- played_mat, numpy array : the actual game state,
+		- next_turn, {-1, 1} : the player's turn,
+		- future_steps, int : the number of plays to be simulated.
+		
+		Returns
+		-------
+		- simulated_game, numpy array : the simulated game matrix.
+		"""
+		simulated_game = played_mat.copy()
 		for i in range(future_steps):
-			available_columns = self.get_available_columns(played_mat)
+			available_columns = self.get_available_columns(simulated_game)
 			if len(available_columns) == 0:
 				break
 				
 			random_col = random.sample(available_columns, 1)[0]
 			
-			available_position = self.get_column_available_position(played_mat, column=random_col)
+			available_position = self.get_column_available_position(simulated_game, column=random_col)
 			
 			if available_position >= 0:
-				played_mat[available_position, random_col] = next_turn * (-1) ** i
+				simulated_game[available_position, random_col] = next_turn * (-1) ** i
 			
-			if winning_move(played_mat, next_turn * (-1) ** i):
+			if winning_move(simulated_game, next_turn * (-1) ** i):
 				break
 	
-		return played_mat
+		return simulated_game
 	
 	def get_next_move_suggested(self, played_mat):
 		"""
@@ -146,21 +171,21 @@ class GameBot():
 					sub_list.append(move)
 			
 			third_moves_list.append(sub_list)
-		
-	
+			
 		# Get Simulations
 		simulated_moves_list = []
 		
 		for moves_list in third_moves_list:
 			if type(moves_list) == str:
-				third_moves_list.append("Invalid Move")
+				simulated_moves_list.append("Invalid Move")
 				continue
 			
 			sub_list = []
 			
 			for move in moves_list:
-				simulated_game = self.get_simulated_game(move, next_turn=1)
-				sub_list.append(simulated_game)
+				for _ in range(2):
+					simulated_game = self.get_simulated_game(move, next_turn=1)
+					sub_list.append(simulated_game)
 				sub_list.append(move)
 			
 			simulated_moves_list.append(sub_list)
@@ -181,12 +206,7 @@ class GameBot():
 				sub_probas.append(pred_proba)
 			
 			probabilities.append(np.mean(sub_probas))
-			print(len(sub_probas))
 			
-		print(probabilities)
-		print(len(probabilities))
-		print("\n")
 		next_move = probabilities.index(max(probabilities))
 		
 		return next_move
-#%%

@@ -28,6 +28,8 @@ my_font = pygame.font.SysFont("monospace", 75)
 bot = GameBot()
 bot.load_next_moves_classifier()
 
+draw_check = 0
+
 # Game
 while not game_over:
 	for event in pygame.event.get():
@@ -52,6 +54,8 @@ while not game_over:
 			if is_valid_location(board, user_move):
 				row = get_next_open_row(board, user_move)
 				drop_piece(board, row, user_move, 1)
+				
+				draw_board(screen, board)
 			
 				if winning_move(board, 1):
 					label = my_font.render("Player 1 Wins!!", 1, RED)
@@ -60,13 +64,19 @@ while not game_over:
 					# print_board(board)
 					draw_board(screen, board)
 					break
-					
-					
+			
+			else:
+				continue
+				
+			pygame.time.wait(draw_check * 60)
+
 			bot_move = bot.get_next_move_suggested(np.flip(board, 0))
 			
 			if is_valid_location(board, bot_move):
 				row = get_next_open_row(board, bot_move)
 				drop_piece(board, row, bot_move, -1)
+				
+				draw_board(screen, board)
 				
 				if winning_move(board, -1):
 					label = my_font.render("Bot Wins!!", 1, YELLOW)
@@ -76,11 +86,23 @@ while not game_over:
 					draw_board(screen, board)
 					break
 			
-			# print_board(board)
-			draw_board(screen, board)
-			
+			else:
+				continue
+				
 			turn += 1
 			turn = turn % 2
+			
+			draw_check += 1
+			
+			if draw_check == 21:
+				label = my_font.render("Draw!!", 1, BLUE)
+				screen.blit(label, (40, 10))
+				game_over = True
+				draw_board(screen, board)
+				break
+				
+			
+				
 			
 	if game_over:
 		pygame.time.wait(3000)
