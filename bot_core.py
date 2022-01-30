@@ -1,5 +1,6 @@
 import pickle
 import numpy as np
+import random
 from game_core import ROWS_COUNT, COLUMNS_COUNT, winning_move
 
 
@@ -69,6 +70,35 @@ class GameBot():
 				
 		return possible_plays_list
 	
+	def get_available_columns(self, played_mat):
+		available_columns = []
+		
+		for col in range(self.columns_count):
+			available_position = self.get_column_available_position(played_mat, col)
+			
+			if available_position >= 0:
+				available_columns.append(col)
+			
+		return available_columns
+	
+	def get_simulated_game(self, played_mat, next_turn, future_steps=10):
+		for i in range(future_steps):
+			available_columns = self.get_available_columns(played_mat)
+			if len(available_columns) == 0:
+				break
+				
+			random_col = random.sample(available_columns, 1)[0]
+			
+			available_position = self.get_column_available_position(played_mat, column=random_col)
+			
+			if available_position >= 0:
+				played_mat[available_position, random_col] = next_turn * (-1) ** i
+			
+			if winning_move(played_mat, next_turn * (-1) ** i):
+				break
+	
+		return played_mat
+	
 	def get_next_move_suggested(self, played_mat):
 		"""
 		Get the move to play, based on win probabilities of each possible next move.
@@ -117,10 +147,28 @@ class GameBot():
 			
 			third_moves_list.append(sub_list)
 		
+	
+		# Get Simulations
+		simulated_moves_list = []
+		
+		for moves_list in third_moves_list:
+			if type(moves_list) == str:
+				third_moves_list.append("Invalid Move")
+				continue
+			
+			sub_list = []
+			
+			for move in moves_list:
+				simulated_game = self.get_simulated_game(move, next_turn=1)
+				sub_list.append(simulated_game)
+				sub_list.append(move)
+			
+			simulated_moves_list.append(sub_list)
+			
 		# Get Probabilities
 		probabilities = []
 		
-		for moves_list in third_moves_list:
+		for moves_list in simulated_moves_list:
 			if type(moves_list) == str:
 				probabilities.append(-100)
 				continue
@@ -133,10 +181,12 @@ class GameBot():
 				sub_probas.append(pred_proba)
 			
 			probabilities.append(np.mean(sub_probas))
-		
+			print(len(sub_probas))
+			
 		print(probabilities)
 		print(len(probabilities))
 		print("\n")
 		next_move = probabilities.index(max(probabilities))
 		
 		return next_move
+#%%
