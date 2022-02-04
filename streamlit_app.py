@@ -94,6 +94,9 @@ def main():
 	if "board" not in st.session_state:
 		board_init()
 	
+	with open("style.css") as f:
+		st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+	
 	for i, row in enumerate(st.session_state.board):
 		cols = st.columns([5, 1, 1, 1, 1, 1, 1, 1, 5])
 		for j, position in enumerate(row):
@@ -101,15 +104,15 @@ def main():
 				position,
 				key=f"{i}-{j}",
 				on_click=drop_piece if st.session_state.player == "X" else computer_player(),
-				args=(j, ),
+				args=(j, )
 			)
 	
 	if st.session_state.winner:
 		st.write(f"{st.session_state.player} wins")
 	
-	# played_mat = get_matrix()
-	# print(played_mat)
+	played_mat = get_matrix()
+	print(played_mat)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 	main()
