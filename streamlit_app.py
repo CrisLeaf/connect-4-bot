@@ -1,6 +1,5 @@
 import streamlit as st
 import numpy as np
-import random
 from bot_core import GameBot
 
 
@@ -19,16 +18,6 @@ def is_valid_location(i, j):
 
 def computer_player(played_mat):
 	bot_move = bot.get_next_move_suggested(played_mat)
-
-	
-	# availables_col = []
-	# for j in range(7):
-	# 	if get_next_open_row(j) != None:
-	# 		availables_col.append(j)
-	# col = random.choice(availables_col)
-	
-	
-	
 	drop_piece(bot_move)
 
 def drop_piece(j):
@@ -40,7 +29,6 @@ def drop_piece(j):
 		else:
 			st.session_state.winner = st.session_state.player
 			st.session_state.player = "O" if st.session_state.player == "X" else "X"
-
 
 def get_matrix():
 	played_mat = np.zeros((6, 7))
@@ -93,24 +81,38 @@ def winning_move(piece):
 				st.session_state.board[i+3, j+3] == piece:
 				return True
 	
-
-				
 def main():
-	st.write(
-		"""
-		# Connect 4 Game
-		"""
-	)
+	html_header = """
+		<head>
+		<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		</head>
+		<a href="https://crisleaf.github.io/apps.html">
+			<i class="fas fa-arrow-left"></i>
+		</a>
+		<h2 style="text-align:center;">Connect 4 Game</h2>
+		<style>
+			i {
+				font-size: 30px;
+				color: #222;
+			}
+			i:hover {
+				color: cornflowerblue;
+				transition: color 0.3s ease;
+			}
+		</style>
+	"""
+	st.markdown(html_header, unsafe_allow_html=True)
+	
 	
 	if "board" not in st.session_state:
 		board_init()
 	
-	reset, score, player, settings = st.columns([0.5, 0.6, 1, 1])
-	reset.button("New Game", on_click=board_init)
-	
 	with open("style.css") as f:
 		st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-		
+	
+	_, _, reset, _, _ = st.columns([3, 1, 1, 1, 3])
+	reset.button("Reset", on_click=board_init)
+	
 	played_mat = get_matrix()
 	
 	for i, row in enumerate(st.session_state.board):
@@ -124,9 +126,26 @@ def main():
 				args=(j, )
 			)
 	
+	
 	if st.session_state.winner:
 		st.write(f"{st.session_state.winner} wins!")
 		board_init()
+	
+	html_source_code = """
+		<p class="source-code">Código Fuente:
+		<a href="https://github.com/CrisLeaf/connect-4-bot">
+		<i class="fab fa-github"></i></a></p>
+		<style>
+			.source-code {
+				text-align: right;
+				color: #666;
+			}
+			.fa-github {
+				color: #666;
+			}
+		</style>
+	"""
+	st.markdown(html_source_code, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
