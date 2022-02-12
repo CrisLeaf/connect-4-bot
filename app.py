@@ -31,7 +31,7 @@ def main():
 	draw_check = 0
 	
 	# Game
-	while not game_over:
+	while True:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				sys.exit()
@@ -58,7 +58,7 @@ def main():
 					draw_board(screen, board)
 					
 					if winning_move(board, 1):
-						label = my_font.render("Player 1 Wins!!", 1, BLACK)
+						label = my_font.render("Player Wins!!", 1, BLACK)
 						screen.blit(label, (40, 10))
 						game_over = True
 						draw_board(screen, board)
@@ -101,6 +101,17 @@ def main():
 		
 		if game_over:
 			pygame.time.wait(2500)
+			
+			board = create_board()
+			game_over = False
+			turn = 0
+			
+			pygame.init()
+			
+			draw_board(screen, board)
+			pygame.display.update()
+			
+			draw_check = 0
 
 if __name__ == "__main__":
 	main()
