@@ -2,6 +2,7 @@ import pickle
 import numpy as np
 import random
 from game_core import ROWS_COUNT, COLUMNS_COUNT, winning_move
+from catboost import CatBoostClassifier
 
 
 class GameBot():
@@ -67,7 +68,7 @@ class GameBot():
 				possible_plays_list.append(played_mat_copy)
 			elif first_iteration:
 				possible_plays_list.append("Invalid Move")
-				
+		
 		return possible_plays_list
 	
 	def get_available_columns(self, played_mat):
@@ -89,7 +90,7 @@ class GameBot():
 			
 			if available_position >= 0:
 				available_columns.append(col)
-			
+		
 		return available_columns
 	
 	def get_simulated_game(self, played_mat, next_turn, future_steps=30):
@@ -111,17 +112,18 @@ class GameBot():
 			available_columns = self.get_available_columns(simulated_game)
 			if len(available_columns) == 0:
 				break
-				
+			
 			random_col = random.sample(available_columns, 1)[0]
 			
-			available_position = self.get_column_available_position(simulated_game, column=random_col)
+			available_position = self.get_column_available_position(simulated_game,
+																	column=random_col)
 			
 			if available_position >= 0:
 				simulated_game[available_position, random_col] = next_turn * (-1) ** i
 			
 			if winning_move(simulated_game, next_turn * (-1) ** i):
 				break
-	
+		
 		return simulated_game
 	
 	def get_next_move_suggested(self, played_mat):
@@ -150,7 +152,7 @@ class GameBot():
 				next_moves = self.get_next_possible_moves(move, 1)
 				next_moves.append(move)
 				second_moves_list.append(next_moves)
-			
+		
 		# Third Moves
 		third_moves_list = []
 		
@@ -158,7 +160,7 @@ class GameBot():
 			if type(moves_list) == str:
 				third_moves_list.append("Invalid Move")
 				continue
-				
+			
 			sub_list = []
 			
 			for index, move in enumerate(moves_list):
@@ -171,7 +173,7 @@ class GameBot():
 					sub_list.append(move)
 			
 			third_moves_list.append(sub_list)
-			
+		
 		# Get Simulations
 		simulated_moves_list = []
 		
@@ -189,7 +191,7 @@ class GameBot():
 				sub_list.append(move)
 			
 			simulated_moves_list.append(sub_list)
-			
+		
 		# Get Probabilities
 		probabilities = []
 		
@@ -197,7 +199,7 @@ class GameBot():
 			if type(moves_list) == str:
 				probabilities.append(-100)
 				continue
-				
+			
 			sub_probas = []
 			
 			for move in moves_list:
@@ -206,7 +208,7 @@ class GameBot():
 				sub_probas.append(pred_proba)
 			
 			probabilities.append(np.mean(sub_probas))
-			
+		
 		next_move = probabilities.index(max(probabilities))
 		
 		return next_move

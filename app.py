@@ -4,9 +4,9 @@ import sys
 import math
 from game_core import (
 	create_board, drop_piece, is_valid_location, get_next_open_row,
-	print_board, winning_move, draw_board,
-	SQUARE_SIZE, RADIUS, width, height, size,
-	BLUE, RED, YELLOW, BLACK
+	winning_move, draw_board,
+	SQUARE_SIZE, RADIUS, width, size,
+	RED, BLACK, GRAY, LIGHT_RED
 )
 from bot_core import GameBot
 
@@ -14,7 +14,6 @@ from bot_core import GameBot
 def main():
 	# Board Initialization
 	board = create_board()
-	# print_board(board)
 	game_over = False
 	turn = 0
 	
@@ -26,7 +25,6 @@ def main():
 	
 	my_font = pygame.font.SysFont("monospace", 75)
 	
-	# Bot Initialization
 	bot = GameBot()
 	bot.load_next_moves_classifier()
 	
@@ -39,16 +37,16 @@ def main():
 				sys.exit()
 			
 			if event.type == pygame.MOUSEMOTION:
-				pygame.draw.rect(screen, BLACK, (0, 0, width, SQUARE_SIZE))
+				pygame.draw.rect(screen, GRAY, (0, 0, width, SQUARE_SIZE - 8))
 				x_pos = event.pos[0]
 				
-				pygame.draw.circle(screen, RED, (x_pos, int(SQUARE_SIZE / 2)), RADIUS)
+				pygame.draw.circle(screen, RED, (x_pos, int(SQUARE_SIZE / 2)), RADIUS - 4)
+				pygame.draw.circle(screen, LIGHT_RED, (x_pos, int(SQUARE_SIZE / 2)), RADIUS - 14)
 			
 			pygame.display.update()
 			
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				pygame.draw.rect(screen, BLACK, (0, 0, width, SQUARE_SIZE))
-				# print(event.pos)
+				pygame.draw.rect(screen, GRAY, (0, 0, width, SQUARE_SIZE - 8))
 				
 				x_pos = event.pos[0]
 				user_move = int(math.floor(x_pos / SQUARE_SIZE))
@@ -60,10 +58,9 @@ def main():
 					draw_board(screen, board)
 					
 					if winning_move(board, 1):
-						label = my_font.render("Player 1 Wins!!", 1, RED)
+						label = my_font.render("Player 1 Wins!!", 1, BLACK)
 						screen.blit(label, (40, 10))
 						game_over = True
-						# print_board(board)
 						draw_board(screen, board)
 						break
 				
@@ -81,10 +78,9 @@ def main():
 					draw_board(screen, board)
 					
 					if winning_move(board, -1):
-						label = my_font.render("Bot Wins!!", 1, YELLOW)
+						label = my_font.render("Bot Wins!!", 1, BLACK)
 						screen.blit(label, (40, 10))
 						game_over = True
-						# print_board(board)
 						draw_board(screen, board)
 						break
 				
@@ -97,15 +93,14 @@ def main():
 				draw_check += 1
 				
 				if draw_check == 21:
-					label = my_font.render("Draw!!", 1, BLUE)
+					label = my_font.render("Draw!!", 1, BLACK)
 					screen.blit(label, (40, 10))
 					game_over = True
 					draw_board(screen, board)
 					break
 		
 		if game_over:
-			pygame.time.wait(3000)
-
+			pygame.time.wait(2500)
 
 if __name__ == "__main__":
 	main()
