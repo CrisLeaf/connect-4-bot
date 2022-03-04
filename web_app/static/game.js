@@ -12,15 +12,10 @@ const resetBtn = document.querySelector('.reset');
 
 var currentPlayer = 1;
 let winner;
-playerTurn.textContent = `${player1}'s turn!`
+//playerTurn.textContent = `${player1}'s turn!`
 
-/*
-for (i = 0; i < tableData.length; i++) {
-    tableData[i].addEventListener('click', (e) => {
-        console.log(`${e.target.parentElement.rowIndex},${e.target.cellIndex}`)
-    });
-};
-*/
+var playTime = true;
+var resetTime = true;
 
 const gameArray = [[0, 0, 0, 0, 0, 0, 0],
                    [0, 0, 0, 0, 0, 0, 0],
@@ -34,81 +29,69 @@ function changeColor (e) {
     let row = [];
 
     for (i = 5; i > -1; i--) {
-        if (tableRow[i].children[column].style.backgroundColor == 'white') {
-            //console.log(column, tableRow[i].rowIndex);
+        if (tableRow[i].children[column].style.backgroundColor == 'white' && playTime === true) {
             row.push(tableRow[i].children[column]);
-
-			if (currentPlayer === 1) {
-				gameArray[i][column] = 1;
-			} else {
-				gameArray[i][column] = -1;
-			}
-			//console.log(JSON.stringify(gameArray));
-
-			/*
-			fetch("/getmethod", {
-				method: "POST",
-				body: JSON.stringify({"game_array": JSON.stringify(gameArray)})
-			}).then(function (response) {
-				response.json().then((res) => console.log(res.bot_move));
-			});
-			*/
-
-			var obj;
-
-
-			fetch("/getmethod", {
-				method: "POST",
-				body: JSON.stringify({"game_array": JSON.stringify(gameArray)})
-			}).then(function (response) {
-				response.json()
-				.then((data) => obj = data)
-				.then(() => console.log(obj));
-			});
-
-
-			console.log(obj.bot_move);
-
-
-
-
-
+            row[0].style.backgroundColor = '#EF6156';
+            playTime = false;
+            resetTime = false;
 
             if (currentPlayer === 1) {
-                row[0].style.backgroundColor = '#EF6156';
+                gameArray[i][column] = 1
                 if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()) {
                     playerTurn.textContent = "Player Wins!";
                     playerTurn.style.color = player1Color;
+                    resetTime = true;
                     return alert("Player Wins!");
                 } else if (drawCheck()) {
                     playerTurn.textContent = 'Draw!';
                     return alert('Draw!');
                 } else {
-                    //playerTurn.textContent = `${player2}'s turn`
-                    return currentPlayer = 2;
+                    console.log(JSON.stringify(gameArray));
+		            fetch("/getmethod", {
+		                method: "POST",
+		                body: JSON.stringify({"game_array": JSON.stringify(gameArray)})
+		            }).then(function (response) {
+		                response.json()
+		                .then((data) => botMove = data)
+		                .then(() => playTime = true)
+		                .then(() => botPlay(botMove.bot_move))
+		                .then(() => console.log(JSON.stringify(gameArray)))
+		                .then(() => resetTime = true)
+		            });
+		            return
                 }
-            } else {
-                row[0].style.backgroundColor = '#ECEA22';
-                if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()) {
-                    playerTurn.textContent = "Bot Wins!";
-                    playerTurn.style.color = player2Color;
-                    return alert("Bot Wins!");
-                } else if (drawCheck()) {
-                    playerTurn.textContent = 'Draw!';
-                    return alert('Draw!');
-                } else {
-                    //playerTurn.textContent = `${player1}'s turn`;
-                    return currentPlayer = 1;
-                }
-
             }
         }
     }
 }
 
+function botPlay (column) {
+	let row = [];
+
+	for (i = 5; i > -1; i--) {
+        if (tableRow[i].children[column].style.backgroundColor == 'white') {
+            row.push(tableRow[i].children[column]);
+            row[0].style.backgroundColor = '#ECEA22';
+            gameArray[i][column] = -1
+
+            if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()) {
+                playerTurn.textContent = "Bot Wins!";
+                playerTurn.style.color = player2Color;
+                playTime = false;
+                return alert("Bot Wins!");
+            } else if (drawCheck()) {
+                playerTurn.textContent = 'Draw!';
+                return alert('Draw!');
+            } else {
+                return currentPlayer = 1;
+            }
+        }
+
+    }
+}
 
 Array.prototype.forEach.call(tableData, (cell) => {
-    cell.addEventListener('click', changeColor);
+	cell.addEventListener('click', changeColor);
     cell.style.backgroundColor = 'white';
 });
 
@@ -173,14 +156,19 @@ function drawCheck () {
 }
 
 resetBtn.addEventListener('click', () => {
-	for (i = 0; i < 6; i++) {
-		for (j = 0; j < 7; j++) {
-			gameArray[i][j] = 0;
+	if (resetTime === true) {
+		playTime = true;
+		for (i = 0; i < 6; i++) {
+			for (j = 0; j < 7; j++) {
+				gameArray[i][j] = 0;
+			}
 		}
-	}
-    slots.forEach(slot => {
-        slot.style.backgroundColor = 'white';
-    });
-    playerTurn.style.color = 'black';
-    return (currentPlayer === 1 ? playerTurn.textContent = `${player1}'s turn` : playerTurn.textContent = `${player2}'s turn`);
+	    slots.forEach(slot => {
+	        slot.style.backgroundColor = 'white';
+	    });
+	    playerTurn.style.color = 'black';
+	    return (currentPlayer === 1);
+    } else {
+        return
+    }
 });

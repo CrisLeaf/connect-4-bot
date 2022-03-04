@@ -3,14 +3,17 @@ import numpy as np
 import random
 from .game_core import ROWS_COUNT, COLUMNS_COUNT, winning_move
 from catboost import CatBoostClassifier
+import time
 
 
 class GameBot():
 	
-	def __init__(self, rows_count=ROWS_COUNT, columns_count=COLUMNS_COUNT, steps=1):
+	def __init__(self, rows_count=ROWS_COUNT, columns_count=COLUMNS_COUNT,
+				 steps=1, bot_difficulty=1):
 		self.rows_count = rows_count
 		self.columns_count = columns_count
 		self.steps = steps
+		self.bot_difficulty = bot_difficulty
 	
 	def load_classifier(self):
 		with open("web_app/static/classifier.pkl", "rb") as file:
@@ -18,18 +21,20 @@ class GameBot():
 		
 		return self
 	
-	def get_win_probability_prediction(self, played_mat):
+	def _get_win_probability_prediction(self, played_mat):
 		"""
-		Calculate the win probability of an specific delete state using the classifier.
+		Calculate the win probability of an specific state using the classifier.
 		"""
 		if winning_move(played_mat, 1):
-			prediction = [[-10]]
+			prediction = [[-0.4 * self.bot_difficulty]]
+		elif winning_move(played_mat, -1):
+			prediction = [[0.4 * self.bot_difficulty]]
 		else:
 			prediction = self.classifier.predict_proba(played_mat.reshape(1, -1))
 		
 		return prediction[0][0]
 	
-	def get_column_available_position(self, played_mat, column):
+	def _get_column_available_position(self, played_mat, column):
 		"""
 		Get the available position of an specific column in an specific delete state.
 		"""
@@ -40,7 +45,7 @@ class GameBot():
 		
 		return available_position
 	
-	def get_next_possible_moves(self, played_mat, piece, first_iteration=False):
+	def _get_next_possible_moves(self, played_mat, piece, first_iteration=False):
 		"""
 		Get a list of all the next possible moves based on the actual delete state.
 		
@@ -61,7 +66,7 @@ class GameBot():
 		for j in range(self.columns_count):
 			played_mat_copy = played_mat.copy()
 			
-			available_position = self.get_column_available_position(played_mat, column=j)
+			available_position = self._get_column_available_position(played_mat, column=j)
 			
 			if available_position >= 0:
 				played_mat_copy[available_position, j] = piece
@@ -71,7 +76,7 @@ class GameBot():
 		
 		return possible_plays_list
 	
-	def get_available_columns(self, played_mat):
+	def _get_available_columns(self, played_mat):
 		"""
 		Get the available columns of the current delete state.
 		
@@ -86,14 +91,14 @@ class GameBot():
 		available_columns = []
 		
 		for col in range(self.columns_count):
-			available_position = self.get_column_available_position(played_mat, col)
+			available_position = self._get_column_available_position(played_mat, col)
 			
 			if available_position >= 0:
 				available_columns.append(col)
 		
 		return available_columns
 	
-	def get_simulated_game(self, played_mat, next_turn, future_steps=30):
+	def _get_simulated_game(self, played_mat, next_turn, future_steps=5):
 		"""
 		Randomly simulate a delete of an specific number of plays.
 		
@@ -108,15 +113,15 @@ class GameBot():
 		- simulated_game, numpy array : the simulated delete matrix.
 		"""
 		simulated_game = played_mat.copy()
-		for i in range(future_steps):
-			available_columns = self.get_available_columns(simulated_game)
+		for i in range(future_steps * self.bot_difficulty):
+			available_columns = self._get_available_columns(simulated_game)
 			if len(available_columns) == 0:
 				break
 			
 			random_col = random.sample(available_columns, 1)[0]
 			
-			available_position = self.get_column_available_position(simulated_game,
-																	column=random_col)
+			available_position = self._get_column_available_position(simulated_game,
+																	 column=random_col)
 			
 			if available_position >= 0:
 				simulated_game[available_position, random_col] = next_turn * (-1) ** i
@@ -126,7 +131,7 @@ class GameBot():
 		
 		return simulated_game
 	
-	def get_next_move_suggested(self, played_mat):
+	def get_next_move(self, played_mat):
 		"""
 		Get the move to play, based on win probabilities of each possible next move.
 
@@ -140,7 +145,7 @@ class GameBot():
 		- next_move, int : the next move column index that the bot should play.
 		"""
 		# Get Next Moves
-		next_moves_list = self.get_next_possible_moves(played_mat, -1, first_iteration=True)
+		next_moves_list = self._get_next_possible_moves(played_mat, -1, first_iteration=True)
 		
 		# Second Moves
 		second_moves_list = []
@@ -149,7 +154,7 @@ class GameBot():
 			if type(move) == str:
 				second_moves_list.append("Invalid Move")
 			else:
-				next_moves = self.get_next_possible_moves(move, 1)
+				next_moves = self._get_next_possible_moves(move, 1)
 				next_moves.append(move)
 				second_moves_list.append(next_moves)
 		
@@ -164,7 +169,7 @@ class GameBot():
 			sub_list = []
 			
 			for index, move in enumerate(moves_list):
-				next_moves = self.get_next_possible_moves(move, -1)
+				next_moves = self._get_next_possible_moves(move, -1)
 				
 				for next_move in next_moves:
 					sub_list.append(next_move)
@@ -185,8 +190,8 @@ class GameBot():
 			sub_list = []
 			
 			for move in moves_list:
-				for _ in range(2):
-					simulated_game = self.get_simulated_game(move, next_turn=1)
+				for _ in range(1 * self.bot_difficulty):
+					simulated_game = self._get_simulated_game(move, next_turn=1)
 					sub_list.append(simulated_game)
 				sub_list.append(move)
 			
@@ -203,12 +208,19 @@ class GameBot():
 			sub_probas = []
 			
 			for move in moves_list:
-				pred_proba = self.get_win_probability_prediction(move)
-				pred_proba += np.random.uniform(-0.3, 0.3, 1)[0]
+				pred_proba = self._get_win_probability_prediction(move)
+				pred_proba += np.random.uniform(-0.2, 0.2, 1)[0]
 				sub_probas.append(pred_proba)
 			
 			probabilities.append(np.mean(sub_probas))
 		
+		print(probabilities)
+		print("\n")
+		
 		next_move = probabilities.index(max(probabilities))
+		
+		wait_time = np.random.uniform(0, 1 * (3 - self.bot_difficulty), 1)[0]
+		print(wait_time)
+		time.sleep(wait_time)
 		
 		return next_move
