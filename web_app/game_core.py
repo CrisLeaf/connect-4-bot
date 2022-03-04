@@ -1,8 +1,6 @@
 import numpy as np
-import pygame
 
 
-# Defaults
 BLUE = (50, 50, 220)
 LIGHT_BLUE = (0, 0, 200)
 RED = (220, 50, 50)
@@ -71,48 +69,3 @@ def winning_move(board, piece):
 				c + 2] == piece and \
 				board[r - 3][c + 3] == piece:
 				return True
-
-def draw_board(screen, board):
-	for c in range(COLUMNS_COUNT):
-		for r in range(ROWS_COUNT):
-			if r == 0:
-				pygame.draw.rect(screen, LIGHT_BLUE,
-								 (c * SQUARE_SIZE, r * SQUARE_SIZE + SQUARE_SIZE - 8,
-								  SQUARE_SIZE, SQUARE_SIZE))
-				pygame.draw.rect(screen, BLUE,
-								 (c * SQUARE_SIZE, r * SQUARE_SIZE + SQUARE_SIZE - 2,
-								  SQUARE_SIZE, SQUARE_SIZE))
-			pygame.draw.rect(screen, BLUE,
-							 (c * SQUARE_SIZE, r * SQUARE_SIZE + SQUARE_SIZE,
-							  SQUARE_SIZE, SQUARE_SIZE))
-			pygame.draw.circle(screen, LIGHT_BLUE,
-							   (int(c * SQUARE_SIZE + SQUARE_SIZE / 2),
-								int(r * SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE / 2)),
-							   RADIUS + 4)
-			pygame.draw.circle(screen, GRAY,
-							   (int(c * SQUARE_SIZE + SQUARE_SIZE / 2),
-								int(r * SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE / 2)),
-							   RADIUS - 4)
-	
-	for c in range(COLUMNS_COUNT):
-		for r in range(ROWS_COUNT):
-			if board[r][c] == 1:
-				pygame.draw.circle(screen, RED,
-								   (int(c * SQUARE_SIZE + SQUARE_SIZE / 2),
-									height - int(r * SQUARE_SIZE + SQUARE_SIZE / 2)),
-								   RADIUS - 4)
-				pygame.draw.circle(screen, LIGHT_RED,
-								   (int(c * SQUARE_SIZE + SQUARE_SIZE / 2),
-									height - int(r * SQUARE_SIZE + SQUARE_SIZE / 2)),
-								   RADIUS - 14)
-			elif board[r][c] == -1:
-				pygame.draw.circle(screen, YELLOW,
-								   (int(c * SQUARE_SIZE + SQUARE_SIZE / 2),
-									height - int(r * SQUARE_SIZE + SQUARE_SIZE / 2)),
-								   RADIUS - 4)
-				pygame.draw.circle(screen, LIGHT_YELLOW,
-								   (int(c * SQUARE_SIZE + SQUARE_SIZE / 2),
-									height - int(r * SQUARE_SIZE + SQUARE_SIZE / 2)),
-								   RADIUS - 14)
-	
-	pygame.display.update()

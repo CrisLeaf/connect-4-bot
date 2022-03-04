@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
 import random
-from game_core import ROWS_COUNT, COLUMNS_COUNT, winning_move
+from .game_core import ROWS_COUNT, COLUMNS_COUNT, winning_move
 from catboost import CatBoostClassifier
 
 
@@ -12,15 +12,15 @@ class GameBot():
 		self.columns_count = columns_count
 		self.steps = steps
 	
-	def load_next_moves_classifier(self):
-		with open("classifier.pkl", "rb") as file:
+	def load_classifier(self):
+		with open("web_app/static/classifier.pkl", "rb") as file:
 			self.classifier = pickle.load(file)
 		
 		return self
 	
 	def get_win_probability_prediction(self, played_mat):
 		"""
-		Calculate the win probability of an specific game state using the classifier.
+		Calculate the win probability of an specific delete state using the classifier.
 		"""
 		if winning_move(played_mat, 1):
 			prediction = [[-10]]
@@ -31,7 +31,7 @@ class GameBot():
 	
 	def get_column_available_position(self, played_mat, column):
 		"""
-		Get the available position of an specific column in an specific game state.
+		Get the available position of an specific column in an specific delete state.
 		"""
 		try:
 			available_position = np.where(played_mat[:, column] != 0)[0][0] - 1
@@ -42,11 +42,11 @@ class GameBot():
 	
 	def get_next_possible_moves(self, played_mat, piece, first_iteration=False):
 		"""
-		Get a list of all the next possible moves based on the actual game state.
+		Get a list of all the next possible moves based on the actual delete state.
 		
 		Params
 		------
-		- played_mat, numpy array : the actual game state,
+		- played_mat, numpy array : the actual delete state,
 		- piece, {-1, 1} : the player's turn,
 		- first_iteration, bool : used to check move availability. If not, the function will return
 								  an 'Invalid Move' element inside the list.
@@ -73,11 +73,11 @@ class GameBot():
 	
 	def get_available_columns(self, played_mat):
 		"""
-		Get the available columns of the current game state.
+		Get the available columns of the current delete state.
 		
 		Params
 		------
-		- played_mat, numpy array : the actual game state.
+		- played_mat, numpy array : the actual delete state.
 		
 		Returns
 		-------
@@ -95,17 +95,17 @@ class GameBot():
 	
 	def get_simulated_game(self, played_mat, next_turn, future_steps=30):
 		"""
-		Randomly simulate a game of an specific number of plays.
+		Randomly simulate a delete of an specific number of plays.
 		
 		Params
 		------
-		- played_mat, numpy array : the actual game state,
+		- played_mat, numpy array : the actual delete state,
 		- next_turn, {-1, 1} : the player's turn,
 		- future_steps, int : the number of plays to be simulated.
 		
 		Returns
 		-------
-		- simulated_game, numpy array : the simulated game matrix.
+		- simulated_game, numpy array : the simulated delete matrix.
 		"""
 		simulated_game = played_mat.copy()
 		for i in range(future_steps):
