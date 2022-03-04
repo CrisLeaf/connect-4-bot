@@ -4,11 +4,20 @@ var player1Color = '#EF6156';
 const player2 = "Bot";
 var player2Color = '#ECEA22';
 
+var drawColor = '#595959';
+
 var tableRow = document.getElementsByTagName('tr');
 var tableData = document.getElementsByTagName('td');
 var playerTurn = document.querySelector('.player-turn');
 const slots = document.querySelectorAll('.slot');
 const resetBtn = document.querySelector('.reset');
+var normalBtn = document.getElementById("normal");
+var hardBtn = document.getElementById("hard");
+
+
+normalBtn.classList.add("clicked");
+
+playerTurn.textContent = "";
 
 var currentPlayer = 1;
 let winner;
@@ -38,11 +47,12 @@ function changeColor (e) {
             if (currentPlayer === 1) {
                 gameArray[i][column] = 1
                 if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()) {
-                    playerTurn.textContent = "Player Wins!";
                     playerTurn.style.color = player1Color;
+                    playerTurn.textContent = "Player Wins!";
                     resetTime = true;
                     return alert("Player Wins!");
                 } else if (drawCheck()) {
+                    playerTurn.style.color = drawColor;
                     playerTurn.textContent = 'Draw!';
                     return alert('Draw!');
                 } else {
@@ -73,11 +83,12 @@ function botPlay (column) {
             gameArray[i][column] = -1
 
             if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()) {
-                playerTurn.textContent = "Bot Wins!";
                 playerTurn.style.color = player2Color;
+                playerTurn.textContent = "Bot Wins!";
                 playTime = false;
                 return alert("Bot Wins!");
             } else if (drawCheck()) {
+                playerTurn.style.color = drawColor;
                 playerTurn.textContent = 'Draw!';
                 return alert('Draw!');
             } else {
@@ -164,7 +175,7 @@ resetBtn.addEventListener('click', () => {
 	    slots.forEach(slot => {
 	        slot.style.backgroundColor = 'white';
 	    });
-	    playerTurn.style.color = 'black';
+	    playerTurn.textContent = "";
 	    return (currentPlayer === 1);
     } else {
         return
@@ -176,15 +187,15 @@ function changeDifficulty (lvl) {
 		fetch("/d", {
             method: "POST",
             body: JSON.stringify({"level": JSON.stringify(lvl)})
-        }).then(function (response) {
-            console.log("responded");
         });
+        hardBtn.classList.remove("clicked");
+		normalBtn.classList.add("clicked");
 	} else {
 		fetch("/d", {
             method: "POST",
             body: JSON.stringify({"level": JSON.stringify(lvl)})
-        }).then(function (response) {
-            console.log("responded");
         });
+        normalBtn.classList.remove("clicked");
+		hardBtn.classList.add("clicked");
 	}
 }

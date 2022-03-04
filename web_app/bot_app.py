@@ -11,22 +11,19 @@ def home_page():
 	global game_bot
 	game_bot = GameBot(bot_difficulty=1)
 	game_bot.load_classifier()
-	print("Normal bot loaded")
 	return render_template("connect4.html")
 
 @bp.route("/d", methods=["POST"])
 def change_difficulty():
 	difficulty = json.loads(request.data.decode())["level"]
-	
 	global game_bot
+	
 	if difficulty == "1":
 		game_bot = GameBot(bot_difficulty=1)
 		game_bot.load_classifier()
-		print("Normal bot loaded")
 	elif difficulty == "2":
 		game_bot = GameBot(bot_difficulty=3)
 		game_bot.load_classifier()
-		print("Hard bot loaded")
 	
 	return render_template("connect4.html")
 

@@ -26,7 +26,7 @@ class GameBot():
 		Calculate the win probability of an specific state using the classifier.
 		"""
 		if winning_move(played_mat, 1):
-			prediction = [[-0.4 * (self.bot_difficulty ** 2)]]
+			prediction = [[-0.4 * (self.bot_difficulty ** 4)]]
 		elif winning_move(played_mat, -1):
 			prediction = [[0.4 * (self.bot_difficulty ** 3)]]
 		else:
@@ -210,7 +210,11 @@ class GameBot():
 			
 			for move in moves_list:
 				pred_proba = self._get_win_probability_prediction(move)
-				pred_proba += np.random.uniform(-0.2, 0.2, 1)[0]
+				pred_proba += np.random.uniform(
+					-0.2 * ((4 - self.bot_difficulty) ** 2.5),
+					0.2 * ((4 - self.bot_difficulty) ** 2.5),
+					1
+				)[0]
 				
 				sub_probas.append(pred_proba)
 				
