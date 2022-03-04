@@ -26,9 +26,9 @@ class GameBot():
 		Calculate the win probability of an specific state using the classifier.
 		"""
 		if winning_move(played_mat, 1):
-			prediction = [[-0.4 * self.bot_difficulty]]
+			prediction = [[-0.4 * (self.bot_difficulty ** 2)]]
 		elif winning_move(played_mat, -1):
-			prediction = [[0.4 * self.bot_difficulty]]
+			prediction = [[0.4 * (self.bot_difficulty ** 3)]]
 		else:
 			prediction = self.classifier.predict_proba(played_mat.reshape(1, -1))
 		
@@ -200,6 +200,7 @@ class GameBot():
 		# Get Probabilities
 		probabilities = []
 		
+		simulated_moves_count = 0
 		for moves_list in simulated_moves_list:
 			if type(moves_list) == str:
 				probabilities.append(-100)
@@ -210,17 +211,26 @@ class GameBot():
 			for move in moves_list:
 				pred_proba = self._get_win_probability_prediction(move)
 				pred_proba += np.random.uniform(-0.2, 0.2, 1)[0]
+				
 				sub_probas.append(pred_proba)
+				
+				simulated_moves_count += 1
 			
 			probabilities.append(np.mean(sub_probas))
 		
-		print(probabilities)
-		print("\n")
-		
 		next_move = probabilities.index(max(probabilities))
 		
-		wait_time = np.random.uniform(0, 1 * (3 - self.bot_difficulty), 1)[0]
-		print(wait_time)
-		time.sleep(wait_time)
+		if 1250 <= simulated_moves_count < 1500:
+			time.sleep(0.2)
+		elif 1000 <= simulated_moves_count < 1250:
+			time.sleep(0.4)
+		elif 750 <= simulated_moves_count < 1000:
+			time.sleep(0.8)
+		elif 500 <= simulated_moves_count < 750:
+			time.sleep(1)
+		elif 250 <= simulated_moves_count < 500:
+			time.sleep(1.3)
+		elif simulated_moves_count < 250:
+			time.sleep(1.5)
 		
 		return next_move

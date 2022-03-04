@@ -46,8 +46,7 @@ function changeColor (e) {
                     playerTurn.textContent = 'Draw!';
                     return alert('Draw!');
                 } else {
-                    console.log(JSON.stringify(gameArray));
-		            fetch("/getmethod", {
+		            fetch("/bot", {
 		                method: "POST",
 		                body: JSON.stringify({"game_array": JSON.stringify(gameArray)})
 		            }).then(function (response) {
@@ -55,7 +54,6 @@ function changeColor (e) {
 		                .then((data) => botMove = data)
 		                .then(() => playTime = true)
 		                .then(() => botPlay(botMove.bot_move))
-		                .then(() => console.log(JSON.stringify(gameArray)))
 		                .then(() => resetTime = true)
 		            });
 		            return
@@ -172,3 +170,21 @@ resetBtn.addEventListener('click', () => {
         return
     }
 });
+
+function changeDifficulty (lvl) {
+	if (lvl == 1) {
+		fetch("/d", {
+            method: "POST",
+            body: JSON.stringify({"level": JSON.stringify(lvl)})
+        }).then(function (response) {
+            console.log("responded");
+        });
+	} else {
+		fetch("/d", {
+            method: "POST",
+            body: JSON.stringify({"level": JSON.stringify(lvl)})
+        }).then(function (response) {
+            console.log("responded");
+        });
+	}
+}
