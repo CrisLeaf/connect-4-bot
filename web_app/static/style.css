@@ -1,3 +1,67 @@
+html {
+	font-size: 36px;
+}
+@media (max-width: 2560px) {
+	html {
+		font-size: 26px;
+	}
+}
+@media (max-width: 2048px) {
+	html {
+		font-size: 18px;
+	}
+}
+@media (max-width: 1980px) {
+	html {
+		font-size: 16px;
+	}
+}
+@media (max-width: 1280px) {
+	html {
+		font-size: 12px;
+	}
+}
+@media (max-width: 1024px) and (min-height: 1024px) {
+	html {
+		font-size: 22px;
+	}
+}
+@media (max-width: 850px) and (min-height: 850px) {
+	html {
+		font-size: 19px;
+	}
+}
+@media (max-width: 768px) and (min-height: 768px) {
+	html {
+		font-size: 17px;
+	}
+}
+@media (max-width: 600px) and (min-height: 600px) {
+	html {
+		font-size: 14px;
+	}
+}
+@media (max-width: 480px) and (min-height: 480px) {
+	html {
+		font-size: 12px;
+	}
+}
+@media (max-width: 414px) and (min-height: 414px) {
+	html {
+		font-size: 10px;
+	}
+}
+@media (max-width: 375px) and (min-height: 375px) {
+	html {
+		font-size: 9px;
+	}
+}
+@media (max-width: 320px) and (min-height: 320px) {
+	html {
+		font-size: 8px;
+	}
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -17,7 +81,7 @@ h3 {
 }
 
 table {
-	margin: 0px;
+	margin: 0;
 }
 
 body {
@@ -29,14 +93,12 @@ body {
     left: 50%;
     transform: translate(-50%);
     width: 38rem;
-    height: 520px;
     height: 32.6rem;
     top: 9rem;
     background: rgb(87, 168, 255);
     border: 0.15rem solid grey;
     padding: 0.6rem;
     border-radius: 1.2rem;
-
 }
 
 .container table tr td {
@@ -59,7 +121,7 @@ body {
     height: 1.875rem;
     text-align: center;
     padding: 0.3rem;
-    border: 0.01rem solid gray;
+    border: 0.1rem solid gray;
     background: #ffffff;
     cursor: pointer;
     transition: 0.1s;
@@ -81,7 +143,7 @@ button {
     height: 1.875rem;
     text-align: center;
     padding: 0.3rem;
-    border: 0.01rem solid gray;
+    border: 0.1rem solid gray;
     background: #ffffff;
     cursor: pointer;
     transition: 0.3s;
@@ -126,8 +188,36 @@ a:hover {
 	font-size: 1.75rem;
 }
 
-/****************************** SCREEN RE-SIZE ***************************************************/
 
-@media (max-width: 3000px) {
+@media (max-width: 1366px) and (min-height: 960px) {
+	.container {
+		top: 12.5rem;
+	}
+	.reset {
+		top: 9.75rem;
+	}
+	.difficulty-selector {
+		top: 9.25rem;
+	}
+	.source-code {
+		top: 36rem;
+	}
+}
 
+@media (max-width: 480px) and (min-height: 320px) {
+	body {
+		margin-top: 4rem;
+	}
+	.container {
+		top: 15.5rem;
+	}
+    .reset {
+        top: 12.75rem;
+    }
+    .difficulty-selector {
+        top: 12.25rem;
+    }
+    .source-code {
+        top: 39rem;
+    }
 }
