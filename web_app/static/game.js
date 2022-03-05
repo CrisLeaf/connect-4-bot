@@ -25,6 +25,7 @@ let winner;
 
 var playTime = true;
 var resetTime = true;
+var changeTime = true;
 
 const gameArray = [[0, 0, 0, 0, 0, 0, 0],
                    [0, 0, 0, 0, 0, 0, 0],
@@ -56,6 +57,7 @@ function changeColor (e) {
                     playerTurn.textContent = 'Draw!';
                     return alert('Draw!');
                 } else {
+                    changeTime = false;
 		            fetch("/bot", {
 		                method: "POST",
 		                body: JSON.stringify({"game_array": JSON.stringify(gameArray)})
@@ -65,6 +67,7 @@ function changeColor (e) {
 		                .then(() => playTime = true)
 		                .then(() => botPlay(botMove.bot_move))
 		                .then(() => resetTime = true)
+		                .then(() => changeTime = true)
 		            });
 		            return
                 }
@@ -183,19 +186,21 @@ resetBtn.addEventListener('click', () => {
 });
 
 function changeDifficulty (lvl) {
-	if (lvl == 1) {
-		fetch("/d", {
-            method: "POST",
-            body: JSON.stringify({"level": JSON.stringify(lvl)})
-        });
-        hardBtn.classList.remove("clicked");
-		normalBtn.classList.add("clicked");
-	} else {
-		fetch("/d", {
-            method: "POST",
-            body: JSON.stringify({"level": JSON.stringify(lvl)})
-        });
-        normalBtn.classList.remove("clicked");
-		hardBtn.classList.add("clicked");
+	if (changeTime === true) {
+		if (lvl == 1) {
+			fetch("/d", {
+	            method: "POST",
+	            body: JSON.stringify({"level": JSON.stringify(lvl)})
+	        });
+	        hardBtn.classList.remove("clicked");
+			normalBtn.classList.add("clicked");
+		} else {
+			fetch("/d", {
+	            method: "POST",
+	            body: JSON.stringify({"level": JSON.stringify(lvl)})
+	        });
+	        normalBtn.classList.remove("clicked");
+			hardBtn.classList.add("clicked");
+		}
 	}
 }

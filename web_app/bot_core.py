@@ -28,7 +28,7 @@ class GameBot():
 		if winning_move(played_mat, 1):
 			prediction = [[-0.4 * (self.bot_difficulty ** 4)]]
 		elif winning_move(played_mat, -1):
-			prediction = [[0.4 * (self.bot_difficulty ** 3)]]
+			prediction = [[0.4 * (self.bot_difficulty ** 5)]]
 		else:
 			prediction = self.classifier.predict_proba(played_mat.reshape(1, -1))
 		
@@ -211,8 +211,8 @@ class GameBot():
 			for move in moves_list:
 				pred_proba = self._get_win_probability_prediction(move)
 				pred_proba += np.random.uniform(
-					-0.2 * ((4 - self.bot_difficulty) ** 2.5),
-					0.2 * ((4 - self.bot_difficulty) ** 2.5),
+					-0.2 * ((3 - self.bot_difficulty) ** 2.5),
+					0.2 * ((3 - self.bot_difficulty) ** 2.5),
 					1
 				)[0]
 				
@@ -229,12 +229,12 @@ class GameBot():
 		elif 1000 <= simulated_moves_count < 1250:
 			time.sleep(0.4)
 		elif 750 <= simulated_moves_count < 1000:
-			time.sleep(0.8)
+			time.sleep(0.5)
 		elif 500 <= simulated_moves_count < 750:
-			time.sleep(1)
+			time.sleep(0.7)
 		elif 250 <= simulated_moves_count < 500:
-			time.sleep(1.3)
+			time.sleep(0.9)
 		elif simulated_moves_count < 250:
-			time.sleep(1.5)
+			time.sleep(1)
 		
 		return next_move
