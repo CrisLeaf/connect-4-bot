@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Connect 4</title>
+</head>
+<body>
+<h3 class="player-turn"></h3>
+<div class="container">
+  <table>
+    <tr>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+    </tr>
+    <tr>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+    </tr>
+    <tr>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+    </tr>
+    <tr>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+    </tr>
+    <tr>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+    </tr>
+    <tr>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+      <td class="slot"></td>
+    </tr>
+  </table>
+</div>
+<div class="reset">Nuevo</div>
+<style>
+    html {
+    	font-size: 36px;
+    }
+    @media (max-width: 2560px) {
+    	html {
+    		font-size: 26px;
+    	}
+    }
+    @media (max-width: 2048px) {
+    	html {
+    		font-size: 18px;
+    	}
+    }
+    @media (max-width: 1980px) {
+    	html {
+    		font-size: 16px;
+    	}
+    }
+    @media (max-width: 1280px) {
+    	html {
+    		font-size: 12px;
+    	}
+    }
+    @media (max-width: 1024px) and (min-height: 1024px) {
+    	html {
+    		font-size: 22px;
+    	}
+    }
+    @media (max-width: 850px) and (min-height: 850px) {
+    	html {
+    		font-size: 19px;
+    	}
+    }
+    @media (max-width: 768px) and (min-height: 768px) {
+    	html {
+    		font-size: 17px;
+    	}
+    }
+    @media (max-width: 600px) and (min-height: 600px) {
+    	html {
+    		font-size: 14px;
+    	}
+    }
+    @media (max-width: 480px) and (min-height: 480px) {
+    	html {
+    		font-size: 12px;
+    	}
+    }
+    @media (max-width: 414px) and (min-height: 414px) {
+    	html {
+    		font-size: 10px;
+    	}
+    }
+    @media (max-width: 375px) and (min-height: 375px) {
+    	html {
+    		font-size: 9px;
+    	}
+    }
+    @media (max-width: 320px) and (min-height: 320px) {
+    	html {
+    		font-size: 8px;
+    	}
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: "Rubik", sans-serif;
+        box-sizing: border-box;
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+
+    h1 {
+        font-size: 3rem;
+        color: #595959;
+    }
+
+    h3 {
+        font-size: 2rem;
+    }
+
+    table {
+    	margin: 0;
+    }
+
+    body {
+        background-color: white;
+    }
+
+    .container {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%);
+        width: 38rem;
+        height: 32.6rem;
+        top: 9rem;
+        background: rgb(87, 168, 255);
+        border: 0.15rem solid grey;
+        padding: 0.6rem;
+        border-radius: 1.2rem;
+    }
+
+    .container table tr td {
+        width: 15rem;
+        height: 5rem;
+        border: 0.15rem solid gray;
+        border-radius: 50%;
+        background-color: white;
+        cursor: pointer;
+    }
+
+
+    .reset {
+    	font-size: 1rem;
+        position: absolute;
+        top: 6.25rem;
+        left: calc(50% + 18.625rem);
+        transform: translate(-100%);
+        width: 5.625rem;
+        height: 1.875rem;
+        text-align: center;
+        padding: 0.3rem;
+        border: 0.1rem solid gray;
+        cursor: pointer;
+        transition: 0.1s;
+        border-radius: 0.625rem;
+    }
+    .reset:active {
+    	background-color: #acacac;
+    }
+
+    .difficulty-selector {
+    	top: 5.75rem;
+    	position: absolute;
+    	left: calc(50% - 18.625rem);
+    }
+
+    button {
+    	font-size: 1rem;
+        width: 5.625rem;
+        height: 1.875rem;
+        text-align: center;
+        padding: 0.3rem;
+        border: 0.1rem solid gray;
+        background: #ffffff;
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 0.625rem;
+    }
+
+    .clicked {
+    	background-color: #acacac;
+    }
+
+    a {
+    	text-decoration: none;
+    	color: #555;
+    }
+
+    a:hover {
+    	color: #888;
+        transition: color 0.2s ease;
+    }
+
+    .previous-page {
+    	position: absolute;
+    	font-size: 1.75rem;
+    	left: calc(50% - 18.625rem);
+    }
+
+    .source-code {
+    	position: absolute;
+    	left: calc(50% + 18.625rem);
+    	transform: translate(-100%);
+    	top: 32.5rem;
+    	font-size: 1.125rem;
+    	text-align: right;
+    	color: #555;
+    	margin: 10.375rem 0 0 0;
+    	float: right;
+    	white-space: nowrap;
+    }
+
+    .fa-github {
+    	color: #555;
+    	font-size: 1.75rem;
+    }
+
+
+    @media (max-width: 1366px) and (min-height: 960px) {
+    	.container {
+    		top: 12.5rem;
+    	}
+    	.reset {
+    		top: 9.75rem;
+    	}
+    	.difficulty-selector {
+    		top: 9.25rem;
+    	}
+    	.source-code {
+    		top: 36rem;
+    	}
+    }
+
+    @media (max-width: 480px) and (min-height: 320px) {
+    	body {
+    		margin-top: 4rem;
+    	}
+    	.container {
+    		top: 15.5rem;
+    		height: 33rem;
+    	}
+        .reset {
+            top: 12.75rem;
+        }
+        .difficulty-selector {
+            top: 12.25rem;
+        }
+        .source-code {
+            top: 39rem;
+        }
+    }
+</style>
+<script>
+    const player1 = "Player";
+    var player1Color = "#EF6156";
+
+    const player2 = "Bot";
+    var player2Color = "#ECEA22";
+
+    var drawColor = "#595959";
+
+    var tableRow = document.getElementsByTagName("tr");
+    var tableData = document.getElementsByTagName("td");
+    var playerTurn = document.querySelector(".player-turn");
+    const slots = document.querySelectorAll(".slot");
+    const resetBtn = document.querySelector(".reset");
+    var normalBtn = document.getElementById("normal");
+    var hardBtn = document.getElementById("hard");
+
+
+    // normalBtn.classList.add("clicked");
+
+    playerTurn.textContent = "";
+
+    var currentPlayer = 1;
+    let winner;
+
+    var playTime = true;
+    var resetTime = true;
+    var changeTime = true;
+
+    const gameArray = [[0, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 0]]
+
+    function changeColor (e) {
+        let column = e.target.cellIndex;
+        let row = [];
+    //playerTurn.textContent = `${player1}"s turn!`
+
+        for (i = 5; i > -1; i--) {
+            if (tableRow[i].children[column].style.backgroundColor == "white" && playTime === true) {
+                row.push(tableRow[i].children[column]);
+                row[0].style.backgroundColor = "#EF6156";
+                playTime = false;
+                resetTime = false;
+
+                if (currentPlayer === 1) {
+                    gameArray[i][column] = 1
+                    if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()) {
+                        playerTurn.style.color = player1Color;
+                        playerTurn.textContent = "Player Wins!";
+                        resetTime = true;
+                        return alert("Player Wins!");
+                    } else if (drawCheck()) {
+                        playerTurn.style.color = drawColor;
+                        playerTurn.textContent = "Draw!";
+                        return alert("Draw!");
+                    } else {
+                        var arrayString = ""
+                        for (i=0; i < gameArray.length; i++) {
+                            for (j=0; j < gameArray[i].length; j++) {
+                                if (gameArray[i][j] == 1) {
+                                    arrayString += "1";
+                                } else if (gameArray[i][j] == -1) {
+                                    arrayString += "2";
+                                } else {
+                                    arrayString += "0";
+                                }
+                            }
+                        }
+                        console.log(arrayString);
+                        changeTime = false;
+
+                        // fetch("/bot", {
+    		            //     method: "POST",
+    		            //     body: JSON.stringify({"game_array": JSON.stringify(gameArray)})
+    		            // }).then(function (response) {
+    		            //     response.json()
+    		            //     .then((data) => botMove = data)
+    		            //     .then(() => playTime = true)
+    		            //     .then(() => botPlay(botMove.bot_move))
+    		            //     .then(() => resetTime = true)
+    		            //     .then(() => changeTime = true)
+    		            // });
+    		            return
+                    }
+                }
+            }
+        }
+    }
+
+    function botPlay (column) {
+    	let row = [];
+
+    	for (i = 5; i > -1; i--) {
+            if (tableRow[i].children[column].style.backgroundColor == "white") {
+                row.push(tableRow[i].children[column]);
+                row[0].style.backgroundColor = "#ECEA22";
+                gameArray[i][column] = -1
+
+                if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()) {
+                    playerTurn.style.color = player2Color;
+                    playerTurn.textContent = "Bot Wins!";
+                    playTime = false;
+                    return alert("Bot Wins!");
+                } else if (drawCheck()) {
+                    playerTurn.style.color = drawColor;
+                    playerTurn.textContent = "Draw!";
+                    return alert("Draw!");
+                } else {
+                    return currentPlayer = 1;
+                }
+            }
+
+        }
+    }
+
+    Array.prototype.forEach.call(tableData, (cell) => {
+    	cell.addEventListener("click", changeColor);
+        cell.style.backgroundColor = "white";
+    });
+
+    function colorMatchCheck (one, two, three, four) {
+        return (one === two && one === three && one === four && one !== "white" && one !== undefined);
+    }
+
+    function horizontalCheck () {
+        for (let row = 0; row < tableRow.length; row++) {
+            for (let col =0; col < 4; col++) {
+               if (colorMatchCheck(tableRow[row].children[col].style.backgroundColor,tableRow[row].children[col+1].style.backgroundColor,
+                                    tableRow[row].children[col+2].style.backgroundColor, tableRow[row].children[col+3].style.backgroundColor)) {
+                   return true;
+               }
+            }
+        }
+    }
+
+    function verticalCheck () {
+        for (let col = 0; col < 7; col++) {
+            for (let row = 0; row < 3; row++) {
+                if (colorMatchCheck(tableRow[row].children[col].style.backgroundColor, tableRow[row+1].children[col].style.backgroundColor,
+                                    tableRow[row+2].children[col].style.backgroundColor,tableRow[row+3].children[col].style.backgroundColor)) {
+                    return true;
+                };
+            }
+        }
+    }
+
+    function diagonalCheck () {
+        for (let col = 0; col < 4; col++) {
+            for (let row = 0; row < 3; row++) {
+                if (colorMatchCheck(tableRow[row].children[col].style.backgroundColor, tableRow[row+1].children[col+1].style.backgroundColor,
+                    tableRow[row+2].children[col+2].style.backgroundColor,tableRow[row+3].children[col+3].style.backgroundColor)) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    function diagonalCheck2 () {
+        for (let col = 0; col < 4; col++) {
+            for (let row = 5; row > 2; row--) {
+                if (colorMatchCheck(tableRow[row].children[col].style.backgroundColor, tableRow[row-1].children[col+1].style.backgroundColor,
+                    tableRow[row-2].children[col+2].style.backgroundColor,tableRow[row-3].children[col+3].style.backgroundColor)) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    function drawCheck () {
+        let fullSlot = []
+        for (i=0; i < tableData.length; i++) {
+            if (tableData[i].style.backgroundColor !== "white") {
+                fullSlot.push(tableData[i]);
+            }
+        }
+        if (fullSlot.length === tableData.length) {
+            return true;
+        }
+    }
+
+    resetBtn.addEventListener("click", () => {
+    	if (resetTime === true) {
+    		playTime = true;
+    		for (i = 0; i < 6; i++) {
+    			for (j = 0; j < 7; j++) {
+    				gameArray[i][j] = 0;
+    			}
+    		}
+    	    slots.forEach(slot => {
+    	        slot.style.backgroundColor = "white";
+    	    });
+    	    playerTurn.textContent = "";
+    	    return (currentPlayer === 1);
+        } else {
+            return
+        }
+    });
+
+    function changeDifficulty (lvl) {
+    	if (changeTime === true) {
+    		if (lvl == 1) {
+    			fetch("/d", {
+    	            method: "POST",
+    	            body: JSON.stringify({"level": JSON.stringify(lvl)})
+    	        });
+    	        hardBtn.classList.remove("clicked");
+    			normalBtn.classList.add("clicked");
+    		} else {
+    			fetch("/d", {
+    	            method: "POST",
+    	            body: JSON.stringify({"level": JSON.stringify(lvl)})
+    	        });
+    	        normalBtn.classList.remove("clicked");
+    			hardBtn.classList.add("clicked");
+    		}
+    	}
+    }
+</script>
+</body>
+</html>
