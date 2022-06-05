@@ -192,6 +192,6 @@ class GameBot():
 if __name__ == "__main__":
     bot = GameBot()
 
-    next = int(bot.get_next_move("000000000000000000000000000000000000001000"))
+    next = int(bot.get_next_move("000000000000000000000000000000000000000100"))
     print("type:", type(next))
     print("suggested next:", next)

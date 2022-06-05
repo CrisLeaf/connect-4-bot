@@ -14,6 +14,6 @@ def get_next_move():
 
     game_bot = GameBot()
 
-    next_move = game_bot.get_next_move(board)
+    next_move = int(game_bot.get_next_move(board))
 
     return jsonify({"next-move": next_move})
