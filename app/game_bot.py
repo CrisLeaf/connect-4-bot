@@ -137,7 +137,8 @@ class GameBot():
                 return np.random.choice([2, 4])
 
         # number_of_sims = int(np.log2(number_of_pieces) + 3)
-        number_of_sims = int(number_of_pieces**(2) / 100) + 2
+        # number_of_sims = int(number_of_pieces**(2) / 100) + 2
+        number_of_sims = int(number_of_pieces**(4) / 200_000) + 3
 
         # Get next moves
         next_move_list = self._get_next_possible_moves(board, -1, first_iteration=True)
