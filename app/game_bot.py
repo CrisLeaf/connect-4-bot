@@ -130,10 +130,10 @@ class GameBot():
 
         if number_of_pieces == 1:
             if self._get_column_available_position(board, 3) == 5:
-                time.sleep(0.8)
+                time.sleep(0.5)
                 return 3
             else:
-                time.sleep(0.8)
+                time.sleep(0.5)
                 return np.random.choice([2, 4])
 
         # number_of_sims = int(np.log2(number_of_pieces) + 3)
