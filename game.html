@@ -294,10 +294,10 @@
 </style>
 <script>
     const player1 = "Player";
-    var player1Color = "#EF6156";
+    var player1Color = "black";
 
     const player2 = "Bot";
-    var player2Color = "#ECEA22";
+    var player2Color = "black";
 
     var drawColor = "#595959";
 
@@ -346,38 +346,34 @@
                         playerTurn.style.color = player1Color;
                         playerTurn.textContent = "Player Wins!";
                         resetTime = true;
-                        return alert("Player Wins!");
+                        return
                     } else if (drawCheck()) {
                         playerTurn.style.color = drawColor;
                         playerTurn.textContent = "Draw!";
-                        return alert("Draw!");
+                        return
                     } else {
-                        var arrayString = ""
+                        var gameString = "";
+
                         for (i=0; i < gameArray.length; i++) {
                             for (j=0; j < gameArray[i].length; j++) {
                                 if (gameArray[i][j] == 1) {
-                                    arrayString += "1";
+                                    gameString += "1";
                                 } else if (gameArray[i][j] == -1) {
-                                    arrayString += "2";
+                                    gameString += "2";
                                 } else {
-                                    arrayString += "0";
+                                    gameString += "0";
                                 }
                             }
                         }
-                        console.log(arrayString);
+                        console.log(gameString);
                         changeTime = false;
-
-                        // fetch("/bot", {
-    		            //     method: "POST",
-    		            //     body: JSON.stringify({"game_array": JSON.stringify(gameArray)})
-    		            // }).then(function (response) {
-    		            //     response.json()
-    		            //     .then((data) => botMove = data)
-    		            //     .then(() => playTime = true)
-    		            //     .then(() => botPlay(botMove.bot_move))
-    		            //     .then(() => resetTime = true)
-    		            //     .then(() => changeTime = true)
-    		            // });
+                        fetch(`https://con4-bot.herokuapp.com/next?board=${gameString}`)
+                            .then(response => response.json())
+                            .then(data => botMove = data["next-move"])
+                            .then(() => playTime = true)
+                            .then(() => botPlay(botMove))
+                            .then(() => resetTime = true)
+                            .then(() => changeTime = true);
     		            return
                     }
                 }
@@ -398,11 +394,11 @@
                     playerTurn.style.color = player2Color;
                     playerTurn.textContent = "Bot Wins!";
                     playTime = false;
-                    return alert("Bot Wins!");
+                    return
                 } else if (drawCheck()) {
                     playerTurn.style.color = drawColor;
                     playerTurn.textContent = "Draw!";
-                    return alert("Draw!");
+                    return
                 } else {
                     return currentPlayer = 1;
                 }
