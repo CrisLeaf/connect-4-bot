@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request, jsonify
 from .game_bot import GameBot
 
 bp = Blueprint("application", __name__, url_prefix="/")
